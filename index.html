@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Birthday Cake 🎂</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=Poppins:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      #mainTitle {
+        font-size: 32px;
+        font-family: "Pixelify Sans", sans-serif;
+        margin-bottom: 8px;
+      }
+      #subTitle {
+        font-size: 18px;
+        font-family: "Pixelify Sans", sans-serif;
+        color: #555;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="card">
+      <div class="card-content">
+        <div class="letter">
+  <div class="letter-heading">happpppy birthday my looooove</div>
+  <div class="letter-subheading">just a small gift for you</div>
+  <div class="letter-divider"></div>
+  <div class="letter-body">Happy birthday, baby. I wanted to give you this small gift since I couldn't give you a real one. I originally wanted it to be better, but I didn't have that much time, and I wanted it to be made by me, not generated. I hope you like it! I am terrible at writing letters, so I just want to say I love youuuuuuu and happy birthday again!</div>
+  <div class="letter-signature">— your lover </div>
+</div>
+      </div>
+    </div>
+  <body>
+    <div class="container">
+      <div id="birthdayText"></div>
+      <div class="cake-container">
+        <div class="candles-wrapper">
+          <div class="flame-layer pixelart-flame"></div>
+          <div class="stick-layer pixelart-stick"></div>
+        </div>
+        <div class="strawberry-wrapper" id="straw0">
+          <div class="pixelart-strawberry"></div>
+        </div>
+        <div class="strawberry-wrapper" id="straw1">
+          <div class="pixelart-strawberry"></div>
+        </div>
+        <div class="strawberry-wrapper" id="straw2">
+          <div class="pixelart-strawberry"></div>
+        </div>
+        <div class="strawberry-wrapper" id="straw3">
+          <div class="pixelart-strawberry"></div>
+        </div>
+        <div class="cake" id="cake"></div>
+      </div>
+    </div>
+
+    <script>
+      const params = new URLSearchParams(window.location.search);
+      const name = params.get("name") || "ARIIIDJ";
+
+      const birthdayText = document.getElementById("birthdayText");
+      birthdayText.innerHTML = `
+    <div id="mainTitle">Happy Birthday, ${name}!</div>
+    <div id="subTitle">Make a wish and blow out the candles.</div>
+  `;
+
+      const btn = document.createElement("button");
+      btn.textContent = "Make a Wish 🕯️";
+      btn.id = "wishBtn";
+      document.querySelector(".container").appendChild(btn);
+
+      btn.addEventListener("click", function () {
+        document.querySelector(".pixelart-flame").style.display = "none";
+        setTimeout(() => {
+          document.querySelector(".container").style.transition = "opacity 1s";
+          document.querySelector(".container").style.opacity = "0";
+          setTimeout(() => {
+            document.querySelector(".container").style.display = "none";
+            document.getElementById("card").style.display = "flex";
+            setTimeout(() => {
+              document.getElementById("card").style.opacity = "1";
+            }, 50);
+          }, 1000);
+        }, 1000);
+      });
+
+      function positionCandles() {
+        const cake = document.getElementById("cake");
+        const wrapper = document.querySelector(".candles-wrapper");
+        const container = document.querySelector(".cake-container");
+
+        const cakeRect = cake.getBoundingClientRect();
+        const containerRect = container.getBoundingClientRect(); // The .cake element is 7x7px but box-shadow pixels extend out from it.
+        // scale(3) is applied, so the shadow at y=21px (pre-scale) from the element
+        // top = cakeRect.top + (21 - 3.5) * 3 = cakeRect.top + 52.5
+        // shadow x=35..133 (pre-scale), center=84, scaled center = (84-3.5)*3 = 241.5 from element left
+        // cakeVisualTop = cakeRect.top + (21 - 3.5) * 3
+        // cakeVisualCenterX = cakeRect.left + (84 - 3.5) * 3
+        const scale = 3;
+        const elementHalfSize = 3.5;
+
+        // Cake top pixel row is at shadow y=21px (pre-scale from element top-left)
+        const cakeVisualTop = cakeRect.top + (35 - elementHalfSize) * scale;
+        // Cake center x: shadow x range 35–133, center = 84
+        const cakeVisualCenterX =
+          cakeRect.left + (84 - elementHalfSize) * scale;
+
+        // Candles: sticks bottom at y=200px, center x at ~110px (positions 40,110,170)
+        const candleBottomY = 110;
+        const candleCenterX = 95;
+
+        // Position relative to cake-container
+        const top = cakeVisualTop - containerRect.top - candleBottomY;
+        const left = cakeVisualCenterX - containerRect.left - candleCenterX;
+
+        wrapper.style.top = top + "px";
+        wrapper.style.left = left + "px";
+
+        // Position 4 strawberries evenly across the cake top layer
+        const containerR = container.getBoundingClientRect();
+        // Cake visual left (shadow x=35) and right (shadow x=133), scaled
+        const cakeLeftX = cakeRect.left + (35 - elementHalfSize) * scale;
+        const cakeRightX = cakeRect.left + (133 - elementHalfSize) * scale;
+        const cakeVisualWidth = cakeRightX - cakeLeftX;
+        // Strawberry body: x=30..90, center=60, width=70px. Sit bottom at layer mid.
+        const strawBottom = 110;
+        const strawTop = cakeVisualTop - containerR.top - strawBottom + 70;
+        const strawW = 70; // visual width of strawberry
+        const spacing = cakeVisualWidth / 4;
+        for (let i = 0; i < 4; i++) {
+          const sw = document.getElementById("straw" + i);
+          // center of slot i: cakeLeftX + spacing*(i+0.5), offset so straw center (x=60) aligns
+          const slotCenterX = cakeLeftX - containerR.left + spacing * (i + 0.5);
+          sw.style.top = strawTop + "px";
+          sw.style.left = slotCenterX - 40 + "px";
+        }
+      }
+      window.addEventListener("load", positionCandles);
+      window.addEventListener("resize", positionCandles);
+    </script>
+  </body>
+</html>
