@@ -12,13 +12,20 @@
       rel="stylesheet"
     />
     <style>
+      #birthdayText {
+        width: 100%;
+        max-width: 500px;
+        padding: 0 16px;
+        box-sizing: border-box;
+      }
       #mainTitle {
-        font-size: 32px;
+        font-size: clamp(20px, 7vw, 32px);
         font-family: "Pixelify Sans", sans-serif;
         margin-bottom: 8px;
+        overflow-wrap: break-word;
       }
       #subTitle {
-        font-size: 18px;
+        font-size: clamp(13px, 4vw, 18px);
         font-family: "Pixelify Sans", sans-serif;
         color: #555;
       }
